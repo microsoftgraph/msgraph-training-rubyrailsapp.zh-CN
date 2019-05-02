@@ -1,6 +1,6 @@
 <!-- markdownlint-disable MD002 MD041 -->
 
-在本练习中, 将把 Microsoft Graph 合并到应用程序中。 对于此应用程序, 您将使用[httparty](https://github.com/jnunemaker/httparty) gem 对 Microsoft Graph 进行调用。
+在本练习中, 将把 Microsoft Graph 合并到应用程序中。 对于此应用程序, 您将使用[httparty](https://github.com/jnunemaker/httparty) Gem 对 Microsoft Graph 进行调用。
 
 ## <a name="create-a-graph-helper"></a>创建图表帮助程序
 

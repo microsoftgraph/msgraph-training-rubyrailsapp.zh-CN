@@ -1,6 +1,6 @@
 <!-- markdownlint-disable MD002 MD041 -->
 
-在本练习中, 将使用["Ruby on Rails"](https://rubyonrails.org/)生成 web 应用程序。 如果尚未安装 Rails, 可以从命令行界面 (CLI) 使用以下命令进行安装。
+在本练习中, 将使用["Ruby On Rails"](https://rubyonrails.org/)生成 web 应用程序。 如果尚未安装 Rails, 可以从命令行界面 (CLI) 使用以下命令进行安装。
 
 ```Shell
 gem install rails
@@ -12,7 +12,7 @@ gem install rails
 rails new graph-tutorial
 ```
 
-rails 将创建一个名`graph-tutorial`为 "搭建基架" 的新目录, 并为 Rails 应用程序。 导航到此新目录, 然后输入以下命令以启动本地 web 服务器。
+Rails 将创建一个名`graph-tutorial`为 "搭建基架" 的新目录, 并为 Rails 应用程序。 导航到此新目录, 然后输入以下命令以启动本地 web 服务器。
 
 ```Shell
 rails server
@@ -56,7 +56,7 @@ class AddSessionsTable < ActiveRecord::Migration[5.2]
 ```
 
 > [!NOTE]
-> 这假设您使用的是 5.2: x。 如果使用的是其他版本, 则将`5.2`替换为您的版本。
+> 这假设您使用的是 5。2: x。 如果使用的是其他版本, 则将`5.2`替换为您的版本。
 
 保存文件并运行以下命令。
 

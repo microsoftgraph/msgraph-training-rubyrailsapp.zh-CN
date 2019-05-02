@@ -1,4 +1,4 @@
-# <a name="microsoft-graph-training-module---build-ruby-on-rails-apps-with-microsoft-graph"></a>microsoft graph 培训模块-使用 Microsoft graph 在 Rails 应用上构建 Ruby
+# <a name="microsoft-graph-training-module---build-ruby-on-rails-apps-with-microsoft-graph"></a>Microsoft Graph 培训模块-使用 Microsoft Graph 在 Rails 应用上构建 Ruby
 
 本模块将介绍如何通过构建 Ruby on Rails web 应用程序, 使用 Microsoft Graph 访问 Office 365 中的数据。
 
