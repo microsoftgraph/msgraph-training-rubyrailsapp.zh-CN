@@ -115,17 +115,7 @@ end
 rails generate controller Auth
 ```
 
-打开 `./app/controllers/auth_controller.rb` 文件。 将下列方法添加到 `AuthController` 类。
-
-```ruby
-def signin
-  redirect_to '/auth/microsoft_graph_auth'
-end
-```
-
-所有此方法都将重定向到 OmniAuth 预期调用我们的自定义策略的路由。
-
-接下来，向`AuthController`类中添加回调方法。 OAuth 流完成后，OmniAuth 中间件将调用此方法。
+打开 `./app/controllers/auth_controller.rb` 文件。 向`AuthController`类中添加回调方法。 OAuth 流完成后，OmniAuth 中间件将调用此方法。
 
 ```ruby
 def callback
@@ -140,22 +130,20 @@ end
 现在，所有这些都是呈现由 OmniAuth 提供的哈希值。 在继续操作之前，我们将使用此操作来验证登录是否正常工作。 在测试之前，我们需要将路由添加到`./config/routes.rb`。
 
 ```ruby
-get 'auth/signin'
-
 # Add route for OmniAuth callback
 match '/auth/:provider/callback', to: 'auth#callback', via: [:get, :post]
 ```
 
-现在，更新视图以使用该`signin`操作。 打开`./app/views/layouts/application.html.erb`。 将行替换`<a href="#" class="nav-link">Sign In</a>`为以下代码行。
+现在将视图更新为 "登录"。 打开`./app/views/layouts/application.html.erb`。 将行替换`<a href="#" class="nav-link">Sign In</a>`为以下代码行。
 
 ```html
-<%= link_to "Sign In", {:controller => :auth, :action => :signin}, :class => "nav-link" %>
+<%= link_to "Click here to sign in", "/auth/microsoft_graph_auth", method: :post, class: "nav-link" %>
 ```
 
 打开`./app/views/home/index.html.erb`文件，并将`<a href="#" class="btn btn-primary btn-large">Click here to sign in</a>`该行替换为以下代码。
 
 ```html
-<%= link_to "Click here to sign in", {:controller => :auth, :action => :signin}, :class => "btn btn-primary btn-large" %>
+<%= link_to "Click here to sign in", "/auth/microsoft_graph_auth", method: :post, class: "btn btn-primary btn-large" %>
 ```
 
 启动服务器并浏览到`https://localhost:3000`。 单击 "登录" 按钮，您应会被重定向`https://login.microsoftonline.com`到。 使用你的 Microsoft 帐户登录，并同意请求的权限。 浏览器重定向到应用程序，显示由 OmniAuth 生成的哈希值。

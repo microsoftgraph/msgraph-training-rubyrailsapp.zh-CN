@@ -1,43 +1,45 @@
 <!-- markdownlint-disable MD002 MD041 -->
 
-在本练习中, 将使用["Ruby On Rails"](https://rubyonrails.org/)生成 web 应用程序。 如果尚未安装 Rails, 可以从命令行界面 (CLI) 使用以下命令进行安装。
+在本练习中，将使用["Ruby On Rails"](https://rubyonrails.org/)生成 web 应用程序。 如果尚未安装 Rails，可以从命令行界面（CLI）使用以下命令进行安装。
 
 ```Shell
 gem install rails
 ```
 
-打开您的 CLI, 导航到您有权创建文件的目录, 并运行以下命令以创建新的 Rails 应用程序。
+打开您的 CLI，导航到您有权创建文件的目录，并运行以下命令以创建新的 Rails 应用程序。
 
 ```Shell
 rails new graph-tutorial
 ```
 
-Rails 将创建一个名`graph-tutorial`为 "搭建基架" 的新目录, 并为 Rails 应用程序。 导航到此新目录, 然后输入以下命令以启动本地 web 服务器。
+Rails 将创建一个名`graph-tutorial`为 "搭建基架" 的新目录，并为 Rails 应用程序。 导航到此新目录，然后输入以下命令以启动本地 web 服务器。
 
 ```Shell
 rails server
 ```
 
-打开浏览器，并导航到 `http://localhost:3000`。 如果一切正常, 你将看到一个 "Yay! 你正在进行滑轨! " 消息。 如果看不到该消息, 请查看[Rails 入门指南](http://guides.rubyonrails.org/)。
+打开浏览器，并导航到 `http://localhost:3000`。 如果一切正常，你将看到一个 "Yay！ 你正在进行滑轨！ " 消息。 如果看不到该消息，请查看[Rails 入门指南](http://guides.rubyonrails.org/)。
 
-在继续操作之前, 请先安装您将使用的一些其他宝石:
+在继续操作之前，请先安装您将使用的一些其他宝石：
 
-- [omniauth-oauth2](https://github.com/omniauth/omniauth-oauth2) , 用于处理登录和 OAuth 令牌流。
+- [omniauth-oauth2](https://github.com/omniauth/omniauth-oauth2) ，用于处理登录和 OAuth 令牌流。
+- [omniauth-](https://github.com/cookpad/omniauth-rails_csrf_protection)将 csrf 保护添加到 omniauth 的 rails_csrf_protection。
 - [httparty](https://github.com/jnunemaker/httparty)调用 Microsoft Graph 的过程。
 - [nokogiri](https://github.com/sparklemotion/nokogiri)处理电子邮件的 HTML 正文。
-- [activerecord-session_store](https://github.com/rails/activerecord-session_store)用于将会话存储在数据库中。
+- [activerecord-](https://github.com/rails/activerecord-session_store)用于在数据库中存储会话的 session_store。
 
 在 CLI 中运行以下命令。
 
 ```Shell
 bundle add omniauth-oauth2
+bundle add omniauth-rails_csrf_protection
 bundle add httparty
 bundle add nokogiri
 bundle add activerecord-session_store
 rails generate active_record:session_migration
 ```
 
-最后一个命令生成如下所示的输出:
+最后一个命令生成如下所示的输出：
 
 ```Shell
 create  db/migrate/20180618172216_add_sessions_table.rb
@@ -56,7 +58,7 @@ class AddSessionsTable < ActiveRecord::Migration[5.2]
 ```
 
 > [!NOTE]
-> 这假设您使用的是 5.2: x。 如果使用的是其他版本, 则将`5.2`替换为您的版本。
+> 这假设您使用的是5.2： x。 如果使用的是其他版本，则将`5.2`替换为您的版本。
 
 保存文件并运行以下命令。
 
@@ -64,7 +66,7 @@ class AddSessionsTable < ActiveRecord::Migration[5.2]
 rake db:migrate
 ```
 
-最后, 将 Rails 配置为使用新的会话存储。 在`./config/initializers`目录中创建一个`session_store.rb`名为的新文件, 并添加以下代码。
+最后，将 Rails 配置为使用新的会话存储。 在`./config/initializers`目录中创建一个`session_store.rb`名为的新文件，并添加以下代码。
 
 ```ruby
 Rails.application.config.session_store :active_record_store, key: '_graph_app_session'
@@ -162,7 +164,7 @@ Rails.application.config.session_store :active_record_store, key: '_graph_app_se
 </html>
 ```
 
-此代码添加简单样式的[引导](http://getbootstrap.com/), 并添加一些简单图标的[字体](https://fontawesome.com/)。 它还定义具有导航栏的全局布局。
+此代码添加简单样式的[引导](http://getbootstrap.com/)，并添加一些简单图标的[字体](https://fontawesome.com/)。 它还定义具有导航栏的全局布局。
 
 现在打开`./app/assets/stylesheets/application.css`并将以下项添加到文件末尾。
 
@@ -184,7 +186,7 @@ body {
 rails generate controller Home index
 ```
 
-然后, 将`index` `Home`控制器上的操作配置为应用程序的默认页面。 打开`./config/routes.rb`并将内容替换为以下内容
+然后，将`index` `Home`控制器上的操作配置为应用程序的默认页面。 打开`./config/routes.rb`并将内容替换为以下内容
 
 ```ruby
 Rails.application.routes.draw do
@@ -196,7 +198,7 @@ Rails.application.routes.draw do
 end
 ```
 
-现在打开`./app/view/home/index.html.erb`文件, 并将其内容替换为以下内容。
+现在打开`./app/view/home/index.html.erb`文件，并将其内容替换为以下内容。
 
 ```html
 <div class="jumbotron">
@@ -211,6 +213,6 @@ end
 </div>
 ```
 
-保存所有更改, 然后重新启动服务器。 现在, 应用程序看起来应非常不同。
+保存所有更改，然后重新启动服务器。 现在，应用程序看起来应非常不同。
 
 ![重新设计的主页的屏幕截图](./images/create-app-01.png)
