@@ -8,19 +8,11 @@
 
 - [Ruby Microsoft Graph 教程](https://docs.microsoft.com/graph/training/ruby-tutorial)
 
-## <a name="demos"></a>演示
-
-此存储库中的[演示](./Demos)目录包含与完成教程的各个部分对应的项目的副本。 如果只想演示教程的某个特定部分，则可以从上一节中的版本开始。
-
-- [01-创建-应用](Demos/01-create-app)：已完成[创建 Ruby on Rails web 应用](https://docs.microsoft.com/graph/training/ruby-tutorial?tutorial-step=1)
-- [02-添加-aad-auth](Demos/02-add-aad-auth)：已完成[添加 Azure AD 身份验证](https://docs.microsoft.com/graph/training/ruby-tutorial?tutorial-step=3)
-- [03-外接 msgraph](Demos/03-add-msgraph)：已完成[获取日历数据](https://docs.microsoft.com/graph/training/ruby-tutorial?tutorial-step=4)
-
 ## <a name="completed-sample"></a>已完成示例
 
 如果只想使用此实验室生成已完成的示例，可以在此处找到它。
 
-- [已完成项目](Demos/03-add-msgraph)
+- [已完成项目](demo)
 
 ## <a name="disclaimer"></a>免责声明
 
