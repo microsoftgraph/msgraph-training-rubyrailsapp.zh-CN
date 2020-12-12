@@ -1,16 +1,16 @@
 <!-- markdownlint-disable MD002 MD041 -->
 
-在本练习中，将把 Microsoft Graph 合并到应用程序中。 对于此应用程序，您将使用[httparty](https://github.com/jnunemaker/httparty) Gem 对 Microsoft Graph 进行调用。
+在此练习中，你将 Microsoft Graph 合并到应用程序中。 对于此应用程序，你将使用 [httparty](https://github.com/jnunemaker/httparty) gem 调用 Microsoft Graph。
 
-## <a name="create-a-graph-helper"></a>创建图表帮助程序
+## <a name="create-a-graph-helper"></a>创建 Graph 帮助程序
 
-1. 创建帮助程序以管理所有 API 调用。 在 CLI 中运行以下命令以生成帮助程序。
+1. 创建用于管理所有 API 调用的帮助程序。 在 CLI 中运行以下命令以生成帮助程序。
 
     ```Shell
     rails generate helper Graph
     ```
 
-1. **/App/helpers/graph_helper rb** ，并将内容替换为以下内容。
+1. 打开 **./app/helpers/graph_helper.rb，** 将内容替换为以下内容。
 
     ```ruby
     require 'httparty'
@@ -19,56 +19,74 @@
     module GraphHelper
       GRAPH_HOST = 'https://graph.microsoft.com'.freeze
 
-      def make_api_call(endpoint, token, params = nil)
-        headers = {
-          Authorization: "Bearer #{token}"
-        }
+      def make_api_call(method, endpoint, token, headers = nil, params = nil, payload = nil)
+        headers ||= {}
+        headers[:Authorization] = "Bearer #{token}"
+        headers[:Accept] = 'application/json'
 
-        query = params || {}
+        params ||= {}
 
-        HTTParty.get "#{GRAPH_HOST}#{endpoint}",
-                     headers: headers,
-                     query: query
+        case method.upcase
+        when 'GET'
+          HTTParty.get "#{GRAPH_HOST}#{endpoint}",
+                       :headers => headers,
+                       :query => params
+        when 'POST'
+          headers['Content-Type'] = 'application/json'
+          HTTParty.post "#{GRAPH_HOST}#{endpoint}",
+                        :headers => headers,
+                        :query => params,
+                        :body => payload ? payload.to_json : nil
+        else
+          raise "HTTP method #{method.upcase} not implemented"
+        end
       end
     end
     ```
 
-请花点时间查看此代码的功能。 它通过`httparty` gem 向请求的终结点发出简单的 GET 请求。 它将发送`Authorization`标头中的访问令牌，并包含任何传递的查询参数。
+请花些时间查看此代码执行哪些功能。 它通过到请求的终结点的进行简单的 GET 或 POST `httparty` 请求。 它将在标头中发送访问令牌，并 `Authorization` 包括传递的任何查询参数。
 
-例如，若要使用`make_api_call`方法获取 GET `https://graph.microsoft.com/v1.0/me?$select=displayName`，可以按如下所示调用它：
+例如，若要使用 `make_api_call` 该方法执行 GET to， `https://graph.microsoft.com/v1.0/me?$select=displayName` 可以如下所示调用它：
 
 ```ruby
-make_api_call `/v1.0/me`, access_token, { '$select': 'displayName' }
+make_api_call 'GET', '/v1.0/me', access_token, { '$select': 'displayName' }
 ```
 
-你将在稍后将更多 Microsoft Graph 功能实施到应用中时生成此功能。
+稍后在应用中实现更多 Microsoft Graph 功能时，将基于此构建。
 
 ## <a name="get-calendar-events-from-outlook"></a>从 Outlook 获取日历事件
 
-1. 在 CLI 中，运行以下命令以添加新的控制器。
+1. 在 CLI 中，运行以下命令以添加新控制器。
 
     ```Shell
-    rails generate controller Calendar index
+    rails generate controller Calendar index new
     ```
 
-1. 将新的路由添加到 **/config/routes.rb**。
+1. 将新路由添加到 **./config/routes.rb**。
 
     ```ruby
-    get 'calendar', to: 'calendar#index'
+    get 'calendar', :to => 'calendar#index'
     ```
 
-1. 将新方法添加到 Graph 帮助程序以[列出用户的事件](/graph/api/user-list-events?view=graph-rest-1.0)。 打开 **/app/helpers/graph_helper rb**并将以下方法添加到`GraphHelper`模块中。
+1. 向 Graph 帮助程序添加新方法 [，获取日历视图](https://docs.microsoft.com/graph/api/calendar-list-calendarview?view=graph-rest-1.0)。 打开 **./app/helpers/graph_helper.rb，** 然后向模块中添加以下 `GraphHelper` 方法。
 
     :::code language="ruby" source="../demo/graph-tutorial/app/helpers/graph_helper.rb" id="GetCalendarSnippet":::
 
-    考虑此代码执行的操作。
+    考虑此代码正在做什么。
 
-    - 将调用的 URL 为`/v1.0/me/events`。
-    - `$select`参数将为每个事件返回的字段限制为只显示我们的视图实际使用的字段。
-    - `$orderby`参数按其创建日期和时间对结果进行排序，最新项目最先开始。
-    - 若要成功进行响应，它将返回包含在`value`键中的项的数组。
+    - 将调用的 URL 为 `/v1.0/me/calendarview` 。
+        - 标头使结果中的开始时间和结束 `Prefer: outlook.timezone` 时间调整为用户的时区。
+        - 和 `startDateTime` `endDateTime` 参数设置视图的起始和结束。
+        - 该 `$select` 参数将每个事件返回的字段限制为仅视图将实际使用的字段。
+        - 此 `$orderby` 参数按开始时间对结果进行排序。
+        - 此 `$top` 参数将结果限制为 50 个事件。
+    - 为了成功响应，它将返回键中包含的项目 `value` 数组。
 
-1. 打开 **/app/controllers/calendar_controller rb** ，并将其全部内容替换为以下内容。
+1. 向 Graph 帮助程序添加新方法，以基于 Windows 时区名称查找 [IANA](https://www.iana.org/time-zones) 时区标识符。 这是必需的，因为 Microsoft Graph 可以将时区作为 Windows 时区名称返回，而 Ruby **DateTime** 类需要 IANA 时区标识符。
+
+    :::code language="ruby" source="../demo/graph-tutorial/app/helpers/graph_helper.rb" id="ZoneMappingSnippet":::
+
+1. 打开 **./app/controllers/calendar_controller.rb，** 并将其全部内容替换为以下内容。
 
     ```ruby
     # Calendar controller
@@ -76,33 +94,40 @@ make_api_call `/v1.0/me`, access_token, { '$select': 'displayName' }
       include GraphHelper
 
       def index
-        @events = get_calendar_events access_token || []
+        # Get the IANA identifier of the user's time zone
+        time_zone = get_iana_from_windows(user_timezone)
+
+        # Calculate the start and end of week in the user's time zone
+        start_datetime = Date.today.beginning_of_week(:sunday).in_time_zone(time_zone).to_time
+        end_datetime = start_datetime.advance(:days => 7)
+
+        @events = get_calendar_view access_token, start_datetime, end_datetime, user_timezone || []
         render json: @events
       rescue RuntimeError => e
         @errors = [
           {
-            message: 'Microsoft Graph returned an error getting events.',
-            debug: e
+            :message => 'Microsoft Graph returned an error getting events.',
+            :debug => e
           }
         ]
       end
     end
     ```
 
-1. 重新启动服务器。 登录并单击导航栏中的 "**日历**" 链接。 如果一切正常，应在用户的日历上看到一个 JSON 转储的事件。
+1. 重新启动服务器。 登录并单击导航 **栏中** 的"日历"链接。 如果一切正常，应在用户日历上看到事件的 JSON 转储。
 
 ## <a name="display-the-results"></a>显示结果
 
-现在，您可以添加 HTML 以以更用户友好的方式显示结果。
+现在，您可以添加 HTML 以更用户友好的方式显示结果。
 
-1. 打开 **/app/views/calendar/index.html.erb** ，并将其内容替换为以下内容。
+1. 打开 **./app/views/calendar/index.html.erb，** 并将其内容替换为以下内容。
 
     :::code language="html" source="../demo/graph-tutorial/app/views/calendar/index.html.erb" id="CalendarSnippet":::
 
-    这将遍历一组事件并为每个事件添加一个表行。
+    这将循环访问事件集合，并针对每个事件添加一个表格行。
 
-1. 从`render json: @events` **/app/controllers/calendar_controller**的`index`操作中移除该行。
+1. 从 `render json: @events` `index` **./app/controllers/calendar_controller.rb 中的操作中删除行**。
 
-1. 刷新页面，应用现在应呈现一个事件表。
+1. 刷新页面，应用现在应呈现事件表。
 
     ![事件表的屏幕截图](./images/add-msgraph-01.png)
