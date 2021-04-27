@@ -5,7 +5,7 @@
 1. 如果尚未安装 Rails，可以通过以下命令从命令行界面 (CLI) 安装它。
 
     ```Shell
-    gem install rails -v 6.0.3.4
+    gem install rails -v 6.1.3.1
     ```
 
 1. 打开 CLI，导航到你拥有创建文件权限的目录，然后运行以下命令以创建新的 Rails 应用。
@@ -20,15 +20,15 @@
     rails server
     ```
 
-1. 打开浏览器，并导航到 `http://localhost:3000`。 如果一切正常，你将看到"Yay！ 你正在使用 Rails！" 消息。 如果你看不到该消息，请查看 [Rails 入门指南](http://guides.rubyonrails.org/)。
+1. 打开浏览器，并导航到 `http://localhost:3000`。 如果一切正常，你将看到"Yay！ 你使用 Rails！" 消息。 如果你看不到该消息，请查看 [Rails 入门指南](http://guides.rubyonrails.org/)。
 
-## <a name="install-gems"></a>安装
+## <a name="install-gems"></a>安装 gem
 
-在继续之前，请安装一些稍后将使用的附加的推进组件：
+在继续之前，请安装一些稍后将使用的其他 gem：
 
 - [omniauth-oauth2，](https://github.com/omniauth/omniauth-oauth2) 用于处理登录和 OAuth 令牌流。
-- [omniauth-rails_csrf_protection](https://github.com/cookpad/omniauth-rails_csrf_protection) 用于向 OmniAuth 添加 CSRF 保护。
-- 用于调用 Microsoft Graph 的[httparty。](https://github.com/jnunemaker/httparty)
+- [omniauth-rails_csrf_protection](https://github.com/cookpad/omniauth-rails_csrf_protection) 向 OmniAuth 添加 CSRF 保护。
+- [用于调用](https://github.com/jnunemaker/httparty)Microsoft Graph。
 - [activerecord-session_store](https://github.com/rails/activerecord-session_store) 用于存储数据库中的会话。
 
 1. 打开 **./Gemfile** 并添加以下行。
@@ -48,7 +48,7 @@
     rake db:migrate
     ```
 
-1. 创建在 `session_store.rb` **./config/initializers** 目录中调用的新文件，并添加以下代码。
+1. 在 `session_store.rb` **./config/initializers** 目录中创建名为 的新文件，并添加以下代码。
 
     :::code language="ruby" source="../demo/graph-tutorial/config/initializers/session_store.rb" id="SessionStoreSnippet":::
 
@@ -66,7 +66,7 @@
 
     :::code language="css" source="../demo/graph-tutorial/app/assets/stylesheets/application.css" id="CssSnippet":::
 
-1. 使用以下命令生成主页控制器。
+1. 使用下面的命令生成主页控制器。
 
     ```Shell
     rails generate controller Home index
@@ -88,8 +88,8 @@
 
     :::code language="html" source="../demo/graph-tutorial/app/views/home/index.html.erb" id="HomeSnippet":::
 
-1. 在 **./app/assets/images** **目录中** no-profile-photo.png名为no-profile-photo.png的 PNG 文件。
+1. 在 **./app/assets/images** **no-profile-photo.png** 名为no-profile-photo.pngPNG 文件。
 
-1. 保存所有更改并重新启动服务器。 现在，应用看起来应该非常不同。
+1. 保存全部更改，重新启动服务器。 现在，应用看起来应该非常不同。
 
-    ![重新设计主页的屏幕截图](./images/create-app-01.png)
+    ![重新设计的主页的屏幕截图](./images/create-app-01.png)
